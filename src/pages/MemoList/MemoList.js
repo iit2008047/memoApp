@@ -58,7 +58,7 @@ export default class MemoList extends React.Component {
           underlayColor={'transparent'}
           onPress={() => this.onAddNew()}>
           <View>
-            <Text style={styles.refreshText}>{'Add New'}</Text>
+            <Text style={styles.addNew}>{'Add New'}</Text>
           </View>
         </TouchableHighlight>
       </View>
@@ -91,10 +91,10 @@ export default class MemoList extends React.Component {
   }
 
   renderProperty = (label, value) => {
-    return (<Text>
-      <Text>{label}</Text>
+    return (<Text style={styles.fieldView}>
+      <Text style={styles.fieldLabel}>{label}</Text>
       <Text>{' : '}</Text>
-      <Text>{value}</Text>
+      <Text style={styles.fieldValue}>{value}</Text>
     </Text>);
   }
 

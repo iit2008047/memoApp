@@ -9,13 +9,13 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
   },
   backButton: {
-    color: '#0a0a14',
+    color: 'black',
     marginVertical: 8,
-    fontSize: 12,
+    fontSize: 14,
     marginBottom: 8,
   },
   fieldView: {
-    marginTop: 8,
+    marginTop: 12,
   },
   fieldValue: {
     color: '#0a0a14',
@@ -25,7 +25,7 @@ export default StyleSheet.create({
   },
   fieldLabel: {
     color: '#73737d',
-    fontSize: 12,
+    fontSize: 15,
   },
   photoPicker: {
     height: 200,

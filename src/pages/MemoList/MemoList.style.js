@@ -30,6 +30,11 @@ export default StyleSheet.create({
     fontSize: 12,
     paddingRight: 12,
   },
+  addNew: {
+    color: 'white',
+    fontSize: 14,
+    paddingRight: 12,
+  },
   sectionView: {
     backgroundColor: 'white',
     borderTopRightRadius: 4,
@@ -52,5 +57,18 @@ export default StyleSheet.create({
     borderBottomRightRadius: 4,
     borderBottomLeftRadius: 4,
     marginBottom: 6,
-  }
+  },
+  fieldValue: {
+    color: '#0a0a14',
+    marginVertical: 8,
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  fieldLabel: {
+    color: '#73737d',
+    fontSize: 14,
+  },
+  fieldView: {
+    marginTop: 4,
+  },
 });
