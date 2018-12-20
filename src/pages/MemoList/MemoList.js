@@ -129,7 +129,8 @@ export default class MemoList extends React.Component {
         title: '',
         description: '',
         with: '',
-        created: new Date()
+        created: new Date(),
+        image: ''
       },
       isEdit: false
     })

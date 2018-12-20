@@ -7,12 +7,15 @@ import {
   SafeAreaView,
   DatePickerIOS,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
+  ScrollView
 } from 'react-native';
 
 import _isEmpty from 'lodash/isEmpty';
+import _get from 'lodash/get';
+
 import ImagePicker from 'react-native-image-picker';
-// import memoService from '../../services/memo'; // to fix upload
+import memoService from '../../services/memo';
 
 import {popScene} from '../../utils/navigator';
 
@@ -31,20 +34,45 @@ export default class EditMemo extends React.Component {
   constructor(props) {
     super(props);
 
-    const { title, description, with: attendy, created } = this.props.memoItem;
+    const { title, description, with: attendy, image } = this.props.memoItem;
 
+    console.log('-->item', this.props.memoItem);
     this.state = {
       memoItem: {
         title: title,
         description: description,
         with: attendy,
-        // created: new Date(created),
+        image: image
       },
       photoUploader: {
         isUploading: false,
         imageData: ''
+      },
+      photoDownloader: {
+        isDownloading: false,
+        imageData: ''
       }
     };
+  }
+
+  componentDidMount() {
+    const { image } = this.props.memoItem;
+    if (!_isEmpty(image)) {
+
+      this.setState({
+        photoDownloader: {
+          isDownloading: true
+        }
+      });
+      memoService.getBase64EncodedDataFromUrl(image).then((response) => {
+        this.setState({
+          photoDownloader: {
+            isDownloading: false,
+            imageData: response
+          }
+        });
+      })
+    }
   }
 
   render() {
@@ -78,13 +106,12 @@ export default class EditMemo extends React.Component {
   }
   renderFields = () => {
     return (
-      <View>
+      <ScrollView style={styles.container}>
         {this.renderTextInput('Title', this.state.memoItem.title, 'title')}
         {this.renderTextInput('Description', this.state.memoItem.description, 'description')}
         {this.renderTextInput('With', this.state.memoItem.with, 'with')}
         {this.renderImagePicker()}
-        {/*{this.renderDatePicker('Created On', this.state.memoItem.created, 'created')}*/}
-      </View>
+      </ScrollView>
     )
   }
 
@@ -97,36 +124,27 @@ export default class EditMemo extends React.Component {
           placeholder={`Enter ${label}`}
           onChangeText={(text) => this.onTextChangeName(key, text)}
           value={value}
-        />
-      </View>
-    )
-  }
-
-  renderDatePicker = (label, value, key) => {
-    console.log(label, value)
-    return (
-      <View style={styles.fieldView}>
-        <Text style={styles.fieldLabel}>{label}</Text>
-        <DatePickerIOS
-          date={value}
-          onDateChange={(date) => this.setDate(key, date)}
+          multiline
         />
       </View>
     )
   }
 
   renderImagePicker = () => {
-    const { photoUploader } = this.state
+    const { photoUploader, photoDownloader } = this.state
+    const isLoading = photoUploader.isUploading || photoDownloader.isDownloading;
+    const imageData = photoUploader.imageData || photoDownloader.imageData;
+
     return (
       <View style={styles.fieldView}>
         <Text style={styles.fieldLabel}>{'Add Photo to your memo'}</Text>
 
         {
-          photoUploader.isUploading ?
+          isLoading ?
             <View style={styles.photoPicker}>
-              <ActivityIndicator size="small" color="white"/>
+              <ActivityIndicator size="small" color="grey"/>
             </View> : <View>
-              {_isEmpty(photoUploader.imageData) ?
+              {_isEmpty(imageData) ?
                 <View style={styles.photoPicker}>
                   <TouchableHighlight
                     underlayColor={'transparent'}
@@ -135,7 +153,7 @@ export default class EditMemo extends React.Component {
                   </TouchableHighlight>
                 </View> :
                 <Image
-                  source={{ uri: photoUploader.imageData }}
+                  source={{ uri: imageData }}
                   style={styles.photoPicker}
                 />
               }
@@ -173,7 +191,6 @@ export default class EditMemo extends React.Component {
       updateMemo({
           ...this.props.memoItem,
           ...this.state.memoItem,
-          // created: this.state.created.getTime()
         }
       )
     } else {
@@ -202,19 +219,23 @@ export default class EditMemo extends React.Component {
           }
         });
 
-        // fix this
-        // memoService.uploadImage(response.data, (new Date).getTime()).then((response) => {
-        //   console.log('---> image', response)
-        // })
-
-        setTimeout(() => {
-          this.setState({
-            photoUploader: {
-              isUploading: false,
-              imageData: 'data:image/jpeg;base64,' + response.data
-            }
+        memoService.uploadImage(response.data, (new Date).getTime()).then((resp) => {
+          const uploadedUrl = JSON.parse(resp).fileURL;
+          this.setState((state) => {
+            return {
+              ...state,
+              photoUploader: {
+                isUploading: false,
+                imageData: 'data:image/png;base64,' + response.data,
+                uploadedUrl: uploadedUrl
+              },
+              memoItem: {
+                ...state.memoItem,
+                image: uploadedUrl
+              }
+            };
           });
-        }, 1000)
+        })
       }
     });
 

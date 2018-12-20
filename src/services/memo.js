@@ -1,4 +1,6 @@
 import _property from 'lodash/property';
+import _isEmpty from 'lodash/isEmpty';
+
 import apiClient from '../app/apiClient';
 import RNFetchBlob from 'rn-fetch-blob';
 
@@ -24,11 +26,25 @@ const uploadImage = (imageData, imageName) => {
     'Content-Type': 'multipart/form-data'
   }, [
     { name: imageName, filename: imageName, data: RNFetchBlob.base64.encode(imageData) },
-  ])
+  ]).then(getData);
 }
+
+const getBase64EncodedDataFromUrl = (url) => {
+  if (_isEmpty(url)) {
+    return Promise.resolve();
+  }
+  return RNFetchBlob
+    .fetch('GET',
+      url,
+    )
+    .then(res => `data:image/png;base64, ${res.data}`)
+    .catch(error => Promise.reject(error));
+};
+
 export default {
   getMemoList,
   updateMemoEntity,
   createMemo,
-  uploadImage
+  uploadImage,
+  getBase64EncodedDataFromUrl
 }
