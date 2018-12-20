@@ -67,7 +67,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  fetchMemos: (isRefresh) => dispatch(fetchMemos()),
+  fetchMemos: (query) => dispatch(fetchMemos(query)),
 });
 
 

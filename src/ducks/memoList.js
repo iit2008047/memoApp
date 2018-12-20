@@ -38,7 +38,7 @@ export default function memoList(state = {
         memoList: action.payload.memoList,
       })
     case MEMO_LIST_ADDITION:
-      const memoList = [ ...state.memoList, action.payload.memoItemId]
+      const memoList = [...state.memoList, action.payload.memoItemId]
       console.log('---> state.memoList', state.memoList, memoList)
       return Object.assign({}, state, {
         memoList: memoList,
@@ -49,7 +49,7 @@ export default function memoList(state = {
 }
 
 
-export const fetchMemos = () => (dispatch) => {
+export const fetchMemos = (query = '') => (dispatch) => {
 
   dispatch(
     {
@@ -57,7 +57,7 @@ export const fetchMemos = () => (dispatch) => {
     }
   );
 
-  memoService.getMemoList().then((respose) => {
+  memoService.getMemoList(query).then((respose) => {
 
     let memoList = [];
     const memoById = _keyBy(respose, (item) => {

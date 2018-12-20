@@ -61,6 +61,14 @@ export default class MemoList extends React.Component {
             <Text style={styles.addNew}>{'Add New'}</Text>
           </View>
         </TouchableHighlight>
+
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          onPress={() => this.onSearchPress()}>
+          <View>
+            <Text style={styles.addNew}>{'Search Memo'}</Text>
+          </View>
+        </TouchableHighlight>
       </View>
     )
   }
@@ -125,5 +133,14 @@ export default class MemoList extends React.Component {
       },
       isEdit: false
     })
+  }
+
+  onSearchPress = () => {
+    navigate(routes.SEARCH_MEMO, { applySearch: this.applySearch })
+  }
+
+
+  applySearch = (query) => {
+    this.props.fetchMemos(query);
   }
 }

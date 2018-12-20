@@ -1,4 +1,5 @@
 export default {
   MEMO_LIST: 'MEMO_LIST',
-  EDIT_MEMO: 'EDIT_MEMO'
+  EDIT_MEMO: 'EDIT_MEMO',
+  SEARCH_MEMO: 'SEARCH_MEMO'
 }
